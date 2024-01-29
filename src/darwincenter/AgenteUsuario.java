@@ -24,8 +24,6 @@ public class AgenteUsuario extends Agent {
 
         @Override
         public void action() {
-            // Dentro del método "action" de AgenteBehaviour
-
             // 1. Esperar solicitud de perfil del agente de recomendación
             ACLMessage solicitudPerfil = blockingReceive();
             if (solicitudPerfil != null && solicitudPerfil.getContent().equals("SolicitarPerfil")) {
@@ -43,7 +41,7 @@ public class AgenteUsuario extends Agent {
         @Override
         public boolean done() {
             // Condición de finalización del comportamiento
-            return false; // Puedes ajustar según tus necesidades
+            return false;
         }
 
         private void enviarPerfil() {
