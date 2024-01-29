@@ -42,7 +42,7 @@ public class AgenteRecomendacion extends Agent {
 
                 // 4. Generar recomendaciones
                 List<String> recomendaciones = generarRecomendaciones();
-                
+
                 // 5. Enviar recomendaciones al usuario
                 ACLMessage mensajeRecomendaciones = new ACLMessage(ACLMessage.INFORM);
                 mensajeRecomendaciones.addReceiver(Agente);

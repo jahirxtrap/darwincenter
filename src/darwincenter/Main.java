@@ -13,11 +13,13 @@ import jade.wrapper.StaleProxyException;
  * @author jahir
  */
 public class Main extends Agent {
-    
+
     public static void main(String[] args) {
         // Iniciar el contenedor principal
         Runtime rt = Runtime.instance();
         Profile p = new ProfileImpl();
+        // Configuración para mostrar la interfaz de JADE
+        p.setParameter(Profile.GUI, "true");
         ContainerController cc = rt.createMainContainer(p);
 
         // Crear el agente principal y asignarlo al contenedor
@@ -28,11 +30,8 @@ public class Main extends Agent {
                     new Object[]{});
             ac.start();
         } catch (StaleProxyException e) { }
-
-        // Configuración para mostrar la interfaz de JADE
-        p.setParameter(Profile.GUI, "true");
     }
-    
+
     @Override
     protected void setup() {
         System.out.println("---Darwin Center---");
@@ -46,7 +45,7 @@ public class Main extends Agent {
     protected void takeDown() {
         // Acciones de limpieza, si es necesario
     }
-    
+
     public void crearAgente(String agenteDestino) {
         try {
             AgentController ac = getContainerController().createNewAgent(
