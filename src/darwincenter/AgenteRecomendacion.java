@@ -35,7 +35,8 @@ public class AgenteRecomendacion extends Agent {
             if (respuestaPerfil != null && respuestaPerfil.getPerformative() == ACLMessage.INFORM) {
                 String perfilUsuario = respuestaPerfil.getContent();
 
-                // 3. Analizar los datos del perfil del usuario para determinar estilos de aprendizaje, inteligencias múltiples, etc.
+                // 3. Analizar los datos del perfil del usuario para determinar estilos de
+                // aprendizaje, inteligencias múltiples, etc.
                 List<String> estilosAprendizaje = Arrays.asList(perfilUsuario.split(","));
                 // Simulación de lógica de análisis del perfil
                 analizarPerfil(estilosAprendizaje);
@@ -62,8 +63,9 @@ public class AgenteRecomendacion extends Agent {
                 }
                 Thread.sleep(500);
                 System.out.println("");
-            } catch (InterruptedException e) { }
-            return false; // Puedes ajustar según tus necesidades
+            } catch (InterruptedException e) {
+            }
+            return false;
         }
 
         private void analizarPerfil(List<String> estilosAprendizaje) {

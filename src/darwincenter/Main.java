@@ -8,6 +8,8 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
+import static darwincenter.Database.crearDatabase;
+
 /**
  *
  * @author jahir
@@ -15,6 +17,8 @@ import jade.wrapper.StaleProxyException;
 public class Main extends Agent {
 
     public static void main(String[] args) {
+        // Crear Base de datos
+        crearDatabase();
         // Iniciar el contenedor principal
         Runtime rt = Runtime.instance();
         Profile p = new ProfileImpl();
@@ -27,15 +31,16 @@ public class Main extends Agent {
             AgentController ac = cc.createNewAgent(
                     "MainAgent",
                     "darwincenter.Main",
-                    new Object[]{});
+                    new Object[] {});
             ac.start();
-        } catch (StaleProxyException e) { }
+        } catch (StaleProxyException e) {
+        }
     }
 
     @Override
     protected void setup() {
         System.out.println("---Darwin Center---");
-        
+
         // Crear agentes
         crearAgente("AgenteRecomendacion");
         crearAgente("AgenteUsuario");
@@ -51,8 +56,9 @@ public class Main extends Agent {
             AgentController ac = getContainerController().createNewAgent(
                     agenteDestino,
                     "darwincenter." + agenteDestino,
-                    new Object[]{});
+                    new Object[] {});
             ac.start();
-        } catch (StaleProxyException e) { }
+        } catch (StaleProxyException e) {
+        }
     }
 }

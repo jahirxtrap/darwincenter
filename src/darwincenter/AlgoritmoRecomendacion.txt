@@ -1,0 +1,41 @@
+----Datos----
+
+Usuario: Nombre, Apellido, EstiloAprendizaje, IntMultiples, CocienteIntelectual
+Docs: Archivo, EstiloAprendizaje, IntMultiples, CocienteIntelectual
+
+----Pseudocódigo----
+
+Procedimiento ObtenerDatosUsuario():
+    Leer Nombre
+    Leer Apellido
+    Leer EstiloAprendizajeUsuario
+    Leer IntMultiplesUsuario
+    Leer CocienteIntelectualUsuario
+    Leer Historial
+
+Procedimiento ObtenerDatosDocs():
+    Leer Archivo
+    Leer EstiloAprendizajeDoc
+    Leer IntMultiplesDoc
+    Leer CocienteIntelectualDoc
+
+Procedimiento AlgoritmoRecomendacion():
+    // Se ejecuta el algoritmo de recomendación
+    ObtenerDatosUsuario()
+    
+    Mientras haya documentos(Archivo) por evaluar:
+        ObtenerDatosDocs()
+
+        // Verificar si el documento es apto para recomendar
+        Si CocienteIntelectualUsuario >= CocienteIntelectualDoc Y
+           (EstiloAprendizajeUsuario = EstiloAprendizajeDoc O IntMultiplesUsuario = IntMultiplesDoc):
+               Mostrar Archivo
+
+        // Leer contenido de Historial y obtener el número de palabras clave similares
+        Mientras haya documentos(Archivo) en Historial:
+            Si NumPalabrasSimilares >= 30:
+                Mostrar Archivo
+        Fin Mientras
+    Fin Mientra
+
+Fin Procedimiento
