@@ -1,8 +1,6 @@
-package darwincenter;
+package modelo;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -72,7 +70,7 @@ public class Database {
 
             // Crear tabla Docs con claves foráneas
             String crearTablaDocs = "CREATE TABLE IF NOT EXISTS Docs "
-                    + "(id INTEGER PRIMARY KEY, Titulo TEXT UNIQUE, Archivo BLOB, "
+                    + "(id INTEGER PRIMARY KEY, Titulo TEXT UNIQUE, Archivo TEXT, "
                     + "EstiloAprendizajeId INTEGER, "
                     + "IntMultiplesId INTEGER, "
                     + "CocienteIntelectual INTEGER, "
@@ -126,20 +124,11 @@ public class Database {
             // Insertar datos aleatorios en la tabla Docs
             String insertarDatosDocs = "INSERT INTO Docs (Titulo, Archivo, EstiloAprendizajeId, IntMultiplesId, CocienteIntelectual) VALUES (?, ?, ?, ?, ?)";
             try ( var pstmtDocs = connection.prepareStatement(insertarDatosDocs)) {
-                for (int i = 0; i < 20; i++) {
+                for (int i = 0; i < 150; i++) {
                     pstmtDocs.setString(1, "Documento" + i);
-                    // Puedes insertar un archivo BLOB aquí, o simplemente poner null dependiendo de tus necesidades.
-                    // Leer el contenido del archivo PDF y convertirlo a un array de bytes
-                    File pdfFile = new File("media/doc.pdf");
-                    byte[] pdfContent = new byte[(int) pdfFile.length()];
-                    try (FileInputStream fileInputStream = new FileInputStream(pdfFile)) {
-                        fileInputStream.read(pdfContent);
-                    } catch (IOException e) {
-                    }
-
-                    pstmtDocs.setBytes(2, pdfContent);
-                    pstmtDocs.setInt(3, random.nextInt(4) + 1);  // EstiloAprendizajeId entre 1 y 4
-                    pstmtDocs.setInt(4, random.nextInt(8) + 1);  // IntMultiplesId entre 1 y 8
+                    pstmtDocs.setString(2, "media/doc" + (random.nextInt(5) + 1) + ".pdf"); // Archivo entre 1 y 4
+                    pstmtDocs.setInt(3, random.nextInt(4) + 1); // EstiloAprendizajeId entre 1 y 4
+                    pstmtDocs.setInt(4, random.nextInt(8) + 1); // IntMultiplesId entre 1 y 8
                     pstmtDocs.setInt(5, random.nextInt(61) + 80); // CocienteIntelectual entre 80 y 140
                     pstmtDocs.executeUpdate();
                 }

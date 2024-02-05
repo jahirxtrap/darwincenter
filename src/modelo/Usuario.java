@@ -1,4 +1,4 @@
-package darwincenter;
+package modelo;
 
 /**
  *
@@ -30,12 +30,28 @@ public class Usuario {
         this.password = password;
     }
 
+    public int getIntMultiplesId() {
+        return intMultiplesId;
+    }
+
+    public void setIntMultiplesId(int intMultiplesId) {
+        this.intMultiplesId = intMultiplesId;
+    }
+
     public String getIntMultiples() {
         return intMultiples;
     }
 
     public void setIntMultiples(String intMultiples) {
         this.intMultiples = intMultiples;
+    }
+
+    public int getEstiloAprendizajeId() {
+        return estiloAprendizajeId;
+    }
+
+    public void setEstiloAprendizajeId(int estiloAprendizajeId) {
+        this.estiloAprendizajeId = estiloAprendizajeId;
     }
 
     public String getEstiloAprendizaje() {
@@ -57,7 +73,9 @@ public class Usuario {
     private int id;
     private String username;
     private String password;
+    private int intMultiplesId;
     private String intMultiples;
+    private int estiloAprendizajeId;
     private String estiloAprendizaje;
     private int cocienteIntelectual;
 }

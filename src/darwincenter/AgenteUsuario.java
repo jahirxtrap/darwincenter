@@ -47,7 +47,7 @@ public class AgenteUsuario extends Agent {
 
         private void enviarPerfil() {
             // Enviar datos de perfil al agente de recomendación
-            perfilUsuario = "EstiloAprendizaje:" + usr.getEstiloAprendizaje() + ",Inteligencia:" + usr.getIntMultiples() + ",CocienteIntelectual:" + usr.getCocienteIntelectual();
+            perfilUsuario = usr.getEstiloAprendizajeId() + "," + usr.getIntMultiplesId() + "," + usr.getCocienteIntelectual();
             ACLMessage respuestaPerfil = new ACLMessage(ACLMessage.INFORM);
             respuestaPerfil.addReceiver(new AID("AgenteRecomendacion", AID.ISLOCALNAME));
             respuestaPerfil.setContent(perfilUsuario);
@@ -57,7 +57,7 @@ public class AgenteUsuario extends Agent {
         private void procesarRecomendaciones(String recomendaciones) {
             // 4. Procesar y mostrar recomendaciones al usuario
             List<String> listaRecomendaciones = Arrays.asList(recomendaciones.split(","));
-            System.out.println("Recomendaciones: " + listaRecomendaciones);
+            System.out.println("Recomendaciones: " + listaRecomendaciones + "\n------------------------------------");
         }
     }
 }

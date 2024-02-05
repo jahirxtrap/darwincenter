@@ -1,18 +1,25 @@
 package darwincenter;
 
 import static darwincenter.LoginFrame.usr;
+import modelo.Doc;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  *
  * @author jahir
  */
 public class AgenteRecomendacion extends Agent {
+
+    static ArrayList<Doc> listaDocs;
 
     @Override
     protected void setup() {
@@ -35,32 +42,65 @@ public class AgenteRecomendacion extends Agent {
             if (respuestaPerfil != null && respuestaPerfil.getPerformative() == ACLMessage.INFORM) {
                 String perfilUsuario = respuestaPerfil.getContent();
 
-                // 3. Analizar los datos del perfil del usuario para determinar estilos de
-                // aprendizaje, inteligencias múltiples, etc.
-                List<String> estilosAprendizaje = Arrays.asList(perfilUsuario.split(","));
-                // Simulación de lógica de análisis del perfil
-                analizarPerfil(estilosAprendizaje);
+                // 4. Generar recomendaciones usando los datos del perfil del usuario
+                List<String> datosUsuario = Arrays.asList(perfilUsuario.split(","));
+                System.out.println("Perfil de " + usr.getUsername() + "[" + usr.getId() + "]: " + datosUsuario);
+                generarRecomendaciones(datosUsuario);
 
-                // 4. Generar recomendaciones
-                List<String> recomendaciones = generarRecomendaciones();
+                // Crear un ArrayList para almacenar los títulos
+                ArrayList<String> titulos = new ArrayList<>();
+                for (Doc doc : listaDocs) {
+                    titulos.add(doc.getTitulo());
+                }
 
                 // 5. Enviar recomendaciones al usuario
                 ACLMessage mensajeRecomendaciones = new ACLMessage(ACLMessage.INFORM);
                 mensajeRecomendaciones.addReceiver(Agente);
-                mensajeRecomendaciones.setContent(String.join(",", recomendaciones));
+                mensajeRecomendaciones.setContent(String.join(",", titulos));
                 send(mensajeRecomendaciones);
             }
         }
 
-        private void analizarPerfil(List<String> estilosAprendizaje) {
-            // Simulación de lógica de análisis del perfil del usuario
-            System.out.println("Perfil de " + usr.getUsername() + " [id:" + usr.getId() + "]: " + estilosAprendizaje);
-        }
+        private void generarRecomendaciones(List<String> datosUsuario) {
+            // Lógica de generación de recomendaciones
+            Connection connection = null;
 
-        private List<String> generarRecomendaciones() {
-            // Simulación de lógica de generación de recomendaciones
-            List<String> recomendaciones = Arrays.asList("Articulo1", "Blog2", "Noticia3");
-            return recomendaciones;
+            try {
+                // Establecer la conexión con la base de datos
+                connection = DriverManager.getConnection("jdbc:sqlite:database.sqlite");
+
+                // Preparar la consulta SQL para obtener el usuario con el username y password proporcionados
+                String consulta = "SELECT * FROM Docs WHERE CocienteIntelectual >= ? AND (EstiloAprendizajeId = ? OR IntMultiplesId = ?)";
+                try ( var pstmt = connection.prepareStatement(consulta)) {
+                    pstmt.setString(2, datosUsuario.get(0));
+                    pstmt.setString(3, datosUsuario.get(1));
+                    pstmt.setInt(1, Integer.parseInt(datosUsuario.get(2)));
+
+                    // Verificar si se encontró docs con los datos proporcionados
+                    try ( var resultSet = pstmt.executeQuery()) {
+                        listaDocs = new ArrayList<>();
+
+                        // Recorrer todos los docs y agregarlos a la lista
+                        while (resultSet.next()) {
+                            // Asignar los valores a la lista de docs
+                            Doc doc = new Doc();
+                            doc.setId(resultSet.getInt("id"));
+                            doc.setTitulo(resultSet.getString("Titulo"));
+                            doc.setArchivo(resultSet.getString("Archivo"));
+                            listaDocs.add(doc);
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+            } finally {
+                try {
+                    // Cerrar la conexión
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 }

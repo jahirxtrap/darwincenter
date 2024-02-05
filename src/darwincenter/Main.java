@@ -12,7 +12,7 @@ public class Main extends Agent {
 
     @Override
     protected void setup() {
-        System.out.println("---Darwin Center---");
+        System.out.println("-----Bienvenido a Darwin Center-----");
 
         // Crear agentes
         crearAgente("AgenteRecomendacion");
