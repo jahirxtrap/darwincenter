@@ -1,41 +1,14 @@
 package darwincenter;
 
 import jade.core.Agent;
-import jade.core.Profile;
-import jade.core.ProfileImpl;
-import jade.core.Runtime;
 import jade.wrapper.AgentController;
-import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
-
-import static darwincenter.Database.crearDatabase;
 
 /**
  *
  * @author jahir
  */
 public class Main extends Agent {
-
-    public static void main(String[] args) {
-        // Crear Base de datos
-        crearDatabase();
-        // Iniciar el contenedor principal
-        Runtime rt = Runtime.instance();
-        Profile p = new ProfileImpl();
-        // Configuración para mostrar la interfaz de JADE
-        p.setParameter(Profile.GUI, "true");
-        ContainerController cc = rt.createMainContainer(p);
-
-        // Crear el agente principal y asignarlo al contenedor
-        try {
-            AgentController ac = cc.createNewAgent(
-                    "MainAgent",
-                    "darwincenter.Main",
-                    new Object[] {});
-            ac.start();
-        } catch (StaleProxyException e) {
-        }
-    }
 
     @Override
     protected void setup() {
@@ -56,7 +29,7 @@ public class Main extends Agent {
             AgentController ac = getContainerController().createNewAgent(
                     agenteDestino,
                     "darwincenter." + agenteDestino,
-                    new Object[] {});
+                    new Object[]{});
             ac.start();
         } catch (StaleProxyException e) {
         }

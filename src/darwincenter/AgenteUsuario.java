@@ -1,5 +1,6 @@
 package darwincenter;
 
+import static darwincenter.LoginFrame.usr;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -46,7 +47,7 @@ public class AgenteUsuario extends Agent {
 
         private void enviarPerfil() {
             // Enviar datos de perfil al agente de recomendación
-            perfilUsuario = "EstiloAprendizaje:Visual,Inteligencia:Logica,CocienteIntelectual:120";
+            perfilUsuario = "EstiloAprendizaje:" + usr.getEstiloAprendizaje() + ",Inteligencia:" + usr.getIntMultiples() + ",CocienteIntelectual:" + usr.getCocienteIntelectual();
             ACLMessage respuestaPerfil = new ACLMessage(ACLMessage.INFORM);
             respuestaPerfil.addReceiver(new AID("AgenteRecomendacion", AID.ISLOCALNAME));
             respuestaPerfil.setContent(perfilUsuario);
@@ -56,7 +57,7 @@ public class AgenteUsuario extends Agent {
         private void procesarRecomendaciones(String recomendaciones) {
             // 4. Procesar y mostrar recomendaciones al usuario
             List<String> listaRecomendaciones = Arrays.asList(recomendaciones.split(","));
-            System.out.println("Recomendaciones recibidas: " + listaRecomendaciones);
+            System.out.println("Recomendaciones: " + listaRecomendaciones);
         }
     }
 }
