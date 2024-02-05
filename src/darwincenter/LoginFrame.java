@@ -3,6 +3,9 @@ package darwincenter;
 import static darwincenter.Database.crearDatabase;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
@@ -39,6 +42,11 @@ public class LoginFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
+
+        loginButton.setBackground(new java.awt.Color(0, 0, 0));
+        loginButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        loginButton.setForeground(new java.awt.Color(255, 255, 255));
         loginButton.setText("Iniciar Sesión");
         loginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -50,8 +58,13 @@ public class LoginFrame extends javax.swing.JFrame {
 
         passwordField.setToolTipText("");
 
+        jLabel1.setBackground(new java.awt.Color(51, 51, 51));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Usuario:");
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Constraseña:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -61,7 +74,7 @@ public class LoginFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(150, 150, 150)
                 .addComponent(loginButton)
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addContainerGap(146, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,8 +121,6 @@ public class LoginFrame extends javax.swing.JFrame {
         login(user, password);
 
         if (user.equals(usr.getUsername()) && password.equals(usr.getPassword())) {
-            this.setVisible(false);
-
             // Iniciar el contenedor principal
             jade.core.Runtime rt = jade.core.Runtime.instance();
             Profile p = new ProfileImpl();
@@ -126,6 +137,11 @@ public class LoginFrame extends javax.swing.JFrame {
                 ac.start();
             } catch (StaleProxyException e) {
             }
+
+            this.setVisible(false);
+            java.awt.EventQueue.invokeLater(() -> {
+                new MainFrame().setVisible(true);
+            });
         } else if ("".equals(userField.getText()) || "".equals(passwordField.getText())) {
             JOptionPane.showMessageDialog(null, "Complete todos los campos", "Error", JOptionPane.WARNING_MESSAGE);
         } else {
@@ -143,12 +159,67 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     private void login(String user, String password) {
-        usr.setId(1);
-        usr.setUsername("admin");
-        usr.setPassword("1234");
-        usr.setEstiloAprendizaje("Teórico");
-        usr.setIntMultiples("Logico-Matemático");
-        usr.setCocienteIntelectual(120);
+        Connection connection = null;
+
+        try {
+            // Establecer la conexión con la base de datos
+            connection = DriverManager.getConnection("jdbc:sqlite:database.sqlite");
+
+            // Preparar la consulta SQL para obtener el usuario con el username y password proporcionados
+            String consulta = "SELECT * FROM Usuario WHERE Username = ? AND Password = ?";
+            try ( var pstmt = connection.prepareStatement(consulta)) {
+                pstmt.setString(1, user);
+                pstmt.setString(2, password);
+
+                // Verificar si se encontró un usuario con el nombre de usuario y contraseña proporcionados
+                try ( var resultSet = pstmt.executeQuery()) {
+                    // Verificar si se obtuvo alguna fila
+                    if (resultSet.next()) {
+                        // Asignar los valores básicos a tu objeto usr
+                        usr.setId(resultSet.getInt("id"));
+                        usr.setUsername(resultSet.getString("Username"));
+                        usr.setPassword(resultSet.getString("Password"));
+                        usr.setCocienteIntelectual(resultSet.getInt("CocienteIntelectual"));
+
+                        // Obtener los valores de EstiloAprendizaje e IntMultiples mediante sus IDs
+                        int estiloAprendizajeId = resultSet.getInt("EstiloAprendizajeId");
+                        int intMultiplesId = resultSet.getInt("IntMultiplesId");
+
+                        // Consultar las tablas EstiloAprendizaje e IntMultiples para obtener los valores reales
+                        String consultaEstilo = "SELECT Valor FROM EstiloAprendizaje WHERE id = ?";
+                        String consultaIntMultiples = "SELECT Valor FROM IntMultiples WHERE id = ?";
+
+                        try ( var pstmtEstilo = connection.prepareStatement(consultaEstilo);  var pstmtIntMultiples = connection.prepareStatement(consultaIntMultiples)) {
+
+                            // Obtener el valor de EstiloAprendizaje
+                            pstmtEstilo.setInt(1, estiloAprendizajeId);
+                            try ( var resultSetEstilo = pstmtEstilo.executeQuery()) {
+                                if (resultSetEstilo.next()) {
+                                    usr.setEstiloAprendizaje(resultSetEstilo.getString("Valor"));
+                                }
+                            }
+
+                            // Obtener el valor de IntMultiples
+                            pstmtIntMultiples.setInt(1, intMultiplesId);
+                            try ( var resultSetIntMultiples = pstmtIntMultiples.executeQuery()) {
+                                if (resultSetIntMultiples.next()) {
+                                    usr.setIntMultiples(resultSetIntMultiples.getString("Valor"));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+        } finally {
+            try {
+                // Cerrar la conexión
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

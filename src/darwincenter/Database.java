@@ -1,10 +1,13 @@
 package darwincenter;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 
 /**
  *
@@ -59,7 +62,7 @@ public class Database {
 
             // Crear tabla Usuario con claves foráneas
             String crearTablaUsuario = "CREATE TABLE IF NOT EXISTS Usuario "
-                    + "(id INTEGER PRIMARY KEY, Username TEXT, Password TEXT, "
+                    + "(id INTEGER PRIMARY KEY, Username TEXT UNIQUE, Password TEXT, "
                     + "EstiloAprendizajeId INTEGER, "
                     + "IntMultiplesId INTEGER, "
                     + "CocienteIntelectual INTEGER, "
@@ -69,7 +72,7 @@ public class Database {
 
             // Crear tabla Docs con claves foráneas
             String crearTablaDocs = "CREATE TABLE IF NOT EXISTS Docs "
-                    + "(id INTEGER PRIMARY KEY, Archivo BLOB, "
+                    + "(id INTEGER PRIMARY KEY, Titulo TEXT UNIQUE, Archivo BLOB, "
                     + "EstiloAprendizajeId INTEGER, "
                     + "IntMultiplesId INTEGER, "
                     + "CocienteIntelectual INTEGER, "
@@ -78,8 +81,73 @@ public class Database {
             statement.execute(crearTablaDocs);
 
             System.out.println("Base de datos creada exitosamente.");
+            insertarDatosAleatorios();
 
         } catch (ClassNotFoundException | SQLException e) {
+        } finally {
+            try {
+                // Cerrar la conexión
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
+    }
+
+    public static void insertarDatosAleatorios() {
+        Connection connection = null;
+        Random random = new Random();
+
+        try {
+            // Establecer la conexión con la base de datos
+            connection = DriverManager.getConnection("jdbc:sqlite:database.sqlite");
+
+            // Insertar datos aleatorios en la tabla Usuario
+            String insertarDatosUsuario = "INSERT INTO Usuario (Username, Password, EstiloAprendizajeId, IntMultiplesId, CocienteIntelectual) VALUES (?, ?, ?, ?, ?)";
+            try ( var pstmtUsuario = connection.prepareStatement(insertarDatosUsuario)) {
+                //admin
+                pstmtUsuario.setString(1, "admin");
+                pstmtUsuario.setString(2, "1234");
+                pstmtUsuario.setInt(3, random.nextInt(4) + 1);  // EstiloAprendizajeId entre 1 y 4
+                pstmtUsuario.setInt(4, random.nextInt(8) + 1);  // IntMultiplesId entre 1 y 8
+                pstmtUsuario.setInt(5, random.nextInt(61) + 80); // CocienteIntelectual entre 80 y 140
+                pstmtUsuario.executeUpdate();
+                for (int i = 0; i < 20; i++) {
+                    pstmtUsuario.setString(1, "usuario" + i);
+                    pstmtUsuario.setString(2, "123" + i);
+                    pstmtUsuario.setInt(3, random.nextInt(4) + 1);  // EstiloAprendizajeId entre 1 y 4
+                    pstmtUsuario.setInt(4, random.nextInt(8) + 1);  // IntMultiplesId entre 1 y 8
+                    pstmtUsuario.setInt(5, random.nextInt(61) + 80); // CocienteIntelectual entre 80 y 140
+                    pstmtUsuario.executeUpdate();
+                }
+            }
+
+            // Insertar datos aleatorios en la tabla Docs
+            String insertarDatosDocs = "INSERT INTO Docs (Titulo, Archivo, EstiloAprendizajeId, IntMultiplesId, CocienteIntelectual) VALUES (?, ?, ?, ?, ?)";
+            try ( var pstmtDocs = connection.prepareStatement(insertarDatosDocs)) {
+                for (int i = 0; i < 20; i++) {
+                    pstmtDocs.setString(1, "Documento" + i);
+                    // Puedes insertar un archivo BLOB aquí, o simplemente poner null dependiendo de tus necesidades.
+                    // Leer el contenido del archivo PDF y convertirlo a un array de bytes
+                    File pdfFile = new File("media/doc.pdf");
+                    byte[] pdfContent = new byte[(int) pdfFile.length()];
+                    try (FileInputStream fileInputStream = new FileInputStream(pdfFile)) {
+                        fileInputStream.read(pdfContent);
+                    } catch (IOException e) {
+                    }
+
+                    pstmtDocs.setBytes(2, pdfContent);
+                    pstmtDocs.setInt(3, random.nextInt(4) + 1);  // EstiloAprendizajeId entre 1 y 4
+                    pstmtDocs.setInt(4, random.nextInt(8) + 1);  // IntMultiplesId entre 1 y 8
+                    pstmtDocs.setInt(5, random.nextInt(61) + 80); // CocienteIntelectual entre 80 y 140
+                    pstmtDocs.executeUpdate();
+                }
+            }
+
+            System.out.println("Datos aleatorios insertados exitosamente.");
+
+        } catch (SQLException e) {
         } finally {
             try {
                 // Cerrar la conexión

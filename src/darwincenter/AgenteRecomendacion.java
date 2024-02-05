@@ -3,7 +3,7 @@ package darwincenter;
 import static darwincenter.LoginFrame.usr;
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import java.util.Arrays;
 import java.util.List;
@@ -14,14 +14,12 @@ import java.util.List;
  */
 public class AgenteRecomendacion extends Agent {
 
-    int numUsuario = 1;
-
     @Override
     protected void setup() {
         addBehaviour(new AgenteBehaviour());
     }
 
-    private class AgenteBehaviour extends Behaviour {
+    private class AgenteBehaviour extends OneShotBehaviour {
 
         @Override
         public void action() {
@@ -54,26 +52,9 @@ public class AgenteRecomendacion extends Agent {
             }
         }
 
-        @Override
-        public boolean done() {
-            // Esperar antes de volver a ejecutar el comportamiento
-            try {
-                Thread.sleep(500);
-                for (int i = 0; i < 10; i++) {
-                    System.out.print(".");
-                    Thread.sleep(500);
-                }
-                Thread.sleep(500);
-                System.out.println("");
-            } catch (InterruptedException e) {
-            }
-            return false;
-        }
-
         private void analizarPerfil(List<String> estilosAprendizaje) {
             // Simulación de lógica de análisis del perfil del usuario
             System.out.println("Perfil de " + usr.getUsername() + " [id:" + usr.getId() + "]: " + estilosAprendizaje);
-            numUsuario++;
         }
 
         private List<String> generarRecomendaciones() {

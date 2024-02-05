@@ -5,7 +5,7 @@ package darwincenter;
  * @author jahir
  */
 public class Usuario {
-    
+
     public int getId() {
         return id;
     }
@@ -53,6 +53,7 @@ public class Usuario {
     public void setCocienteIntelectual(int cocienteIntelectual) {
         this.cocienteIntelectual = cocienteIntelectual;
     }
+
     private int id;
     private String username;
     private String password;
