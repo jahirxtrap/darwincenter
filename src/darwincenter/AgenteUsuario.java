@@ -25,14 +25,14 @@ public class AgenteUsuario extends Agent {
 
         @Override
         public void action() {
-            // 1. Esperar solicitud de perfil del agente de recomendación
+            // Esperar solicitud de perfil del agente de recomendación
             ACLMessage solicitudPerfil = blockingReceive();
             if (solicitudPerfil != null && solicitudPerfil.getContent().equals("SolicitarPerfil")) {
-                // 2. Proporcionar datos de perfil al agente de recomendación
+                // Proporcionar datos de perfil al agente de recomendación
                 enviarPerfil();
             }
 
-            // 3. Recibir recomendaciones del agente de recomendación
+            // Recibir recomendaciones del agente de recomendación
             ACLMessage mensajeRecomendaciones = blockingReceive();
             if (mensajeRecomendaciones != null && mensajeRecomendaciones.getPerformative() == ACLMessage.INFORM) {
                 procesarRecomendaciones(mensajeRecomendaciones.getContent());

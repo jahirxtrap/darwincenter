@@ -112,8 +112,8 @@ public class Database {
                 pstmtUsuario.setInt(5, random.nextInt(61) + 80); // CocienteIntelectual entre 80 y 140
                 pstmtUsuario.executeUpdate();
                 for (int i = 0; i < 20; i++) {
-                    pstmtUsuario.setString(1, "usuario" + i);
-                    pstmtUsuario.setString(2, "123" + i);
+                    pstmtUsuario.setString(1, "user" + i);
+                    pstmtUsuario.setString(2, "pass" + i);
                     pstmtUsuario.setInt(3, random.nextInt(4) + 1);  // EstiloAprendizajeId entre 1 y 4
                     pstmtUsuario.setInt(4, random.nextInt(8) + 1);  // IntMultiplesId entre 1 y 8
                     pstmtUsuario.setInt(5, random.nextInt(61) + 80); // CocienteIntelectual entre 80 y 140
@@ -125,7 +125,7 @@ public class Database {
             String insertarDatosDocs = "INSERT INTO Docs (Titulo, Archivo, EstiloAprendizajeId, IntMultiplesId, CocienteIntelectual) VALUES (?, ?, ?, ?, ?)";
             try ( var pstmtDocs = connection.prepareStatement(insertarDatosDocs)) {
                 for (int i = 0; i < 150; i++) {
-                    pstmtDocs.setString(1, "Documento" + i);
+                    pstmtDocs.setString(1, "Articulo" + i);
                     pstmtDocs.setString(2, "media/doc" + (random.nextInt(5) + 1) + ".pdf"); // Archivo entre 1 y 4
                     pstmtDocs.setInt(3, random.nextInt(4) + 1); // EstiloAprendizajeId entre 1 y 4
                     pstmtDocs.setInt(4, random.nextInt(8) + 1); // IntMultiplesId entre 1 y 8

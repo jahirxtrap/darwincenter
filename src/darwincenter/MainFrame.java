@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -18,6 +19,7 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         setLocationRelativeTo(null);
+        setIconImage(new ImageIcon("src/icon.png").getImage());
 
         userLabel.setText("Usuario: " + usr.getUsername());
         ciLabel.setText("Cociente Intelectual: " + usr.getCocienteIntelectual());
@@ -73,6 +75,7 @@ public class MainFrame extends javax.swing.JFrame {
         openButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Darwin Center");
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
@@ -97,7 +100,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("DARWIN CENTER");
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logo.png"))); // NOI18N
 
         logoutButton.setBackground(new java.awt.Color(0, 0, 0));
         logoutButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -112,21 +115,21 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(80, 80, 80));
 
-        ciLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        ciLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         ciLabel.setForeground(new java.awt.Color(255, 255, 255));
         ciLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         ciLabel.setText("Cociente Intelectual:");
 
-        estApLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        estApLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         estApLabel.setForeground(new java.awt.Color(255, 255, 255));
         estApLabel.setText("Estilo de Aprendizaje:");
 
         userLabel.setBackground(new java.awt.Color(102, 102, 102));
-        userLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        userLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         userLabel.setForeground(new java.awt.Color(255, 255, 255));
         userLabel.setText("Usuario:");
 
-        intMultLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        intMultLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         intMultLabel.setForeground(new java.awt.Color(255, 255, 255));
         intMultLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         intMultLabel.setText("Inteligencias Multiples:");
@@ -199,7 +202,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(12, 12, 12)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(12, 12, 12)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -235,7 +238,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void recomendacionesListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_recomendacionesListMouseClicked
         if (evt.getClickCount() == 2) { // Doble clic
-            abrirDoc();
+            openButton.doClick();
         }
     }//GEN-LAST:event_recomendacionesListMouseClicked
 
@@ -244,8 +247,8 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_openButtonActionPerformed
 
     private void recomendacionesListKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_recomendacionesListKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            abrirDoc();
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) { // Enter
+            openButton.doClick();
         }
     }//GEN-LAST:event_recomendacionesListKeyPressed
 

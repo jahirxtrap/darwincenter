@@ -30,19 +30,19 @@ public class AgenteRecomendacion extends Agent {
 
         @Override
         public void action() {
-            // 1. Solicitar datos del perfil del usuario al agente de usuario
+            // Solicitar datos del perfil del usuario al agente de usuario
             AID Agente = new AID("AgenteUsuario", AID.ISLOCALNAME);
             ACLMessage solicitudPerfil = new ACLMessage(ACLMessage.REQUEST);
             solicitudPerfil.addReceiver(Agente);
             solicitudPerfil.setContent("SolicitarPerfil");
             send(solicitudPerfil);
 
-            // 2. Recibir datos del perfil del usuario
+            // Recibir datos del perfil del usuario
             ACLMessage respuestaPerfil = blockingReceive();
             if (respuestaPerfil != null && respuestaPerfil.getPerformative() == ACLMessage.INFORM) {
                 String perfilUsuario = respuestaPerfil.getContent();
 
-                // 4. Generar recomendaciones usando los datos del perfil del usuario
+                // Generar recomendaciones usando los datos del perfil del usuario
                 List<String> datosUsuario = Arrays.asList(perfilUsuario.split(","));
                 System.out.println("Perfil de " + usr.getUsername() + "[" + usr.getId() + "]: " + datosUsuario);
                 generarRecomendaciones(datosUsuario);
@@ -53,7 +53,7 @@ public class AgenteRecomendacion extends Agent {
                     titulos.add(doc.getTitulo());
                 }
 
-                // 5. Enviar recomendaciones al usuario
+                // Enviar recomendaciones al usuario
                 ACLMessage mensajeRecomendaciones = new ACLMessage(ACLMessage.INFORM);
                 mensajeRecomendaciones.addReceiver(Agente);
                 mensajeRecomendaciones.setContent(String.join(",", titulos));
