@@ -106,7 +106,7 @@ public class MainFrame extends javax.swing.JFrame {
         logoutButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         logoutButton.setForeground(new java.awt.Color(255, 255, 255));
         logoutButton.setText("Cerrar sesión");
-        logoutButton.setToolTipText("Cerrar sesión");
+        logoutButton.setToolTipText("");
         logoutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 logoutButtonActionPerformed(evt);
@@ -167,7 +167,7 @@ public class MainFrame extends javax.swing.JFrame {
         openButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         openButton.setForeground(new java.awt.Color(255, 255, 255));
         openButton.setText("Abrir");
-        openButton.setToolTipText("Cerrar sesión");
+        openButton.setToolTipText("");
         openButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openButtonActionPerformed(evt);
