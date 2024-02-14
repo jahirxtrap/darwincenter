@@ -78,6 +78,15 @@ public class Database {
                     + "FOREIGN KEY (IntMultiplesId) REFERENCES IntMultiples(id))";
             statement.execute(crearTablaDocs);
 
+            // Crear tabla Interaccion con claves foráneas
+            String crearTablaInteraccion = "CREATE TABLE IF NOT EXISTS Interaccion "
+                    + "(id INTEGER PRIMARY KEY, "
+                    + "UsuarioId INTEGER, "
+                    + "DocId INTEGER, "
+                    + "FOREIGN KEY (UsuarioId) REFERENCES Usuario(id), "
+                    + "FOREIGN KEY (DocId) REFERENCES Doc(id))";
+            statement.execute(crearTablaInteraccion);
+
             System.out.println("Base de datos creada exitosamente.");
             insertarDatosAleatorios();
 
@@ -131,6 +140,16 @@ public class Database {
                     pstmtDocs.setInt(4, random.nextInt(8) + 1); // IntMultiplesId entre 1 y 8
                     pstmtDocs.setInt(5, random.nextInt(61) + 80); // CocienteIntelectual entre 80 y 140
                     pstmtDocs.executeUpdate();
+                }
+            }
+
+            // Insertar datos aleatorios en la tabla Interaccion
+            String insertarDatosInteraccion = "INSERT INTO Interaccion (UsuarioId, DocId) VALUES (?, ?)";
+            try ( var pstmtInter = connection.prepareStatement(insertarDatosInteraccion)) {
+                for (int i = 1; i <= 200; i++) {
+                    pstmtInter.setInt(1, random.nextInt(31) + 1); // UsuarioId entre 1 y 31
+                    pstmtInter.setInt(2, random.nextInt(150) + 1); // DocId entre 1 y 150
+                    pstmtInter.executeUpdate();
                 }
             }
 

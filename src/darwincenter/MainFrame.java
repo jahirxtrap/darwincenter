@@ -7,6 +7,10 @@ import java.awt.Desktop;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 
@@ -49,10 +53,39 @@ public class MainFrame extends javax.swing.JFrame {
                     try {
                         // Abrir el archivo con la aplicación predeterminada del sistema
                         Desktop.getDesktop().open(new File(doc.getArchivo()));
+                        // Registrar interacción en la base de datos
+                        registrarInteraccion(doc.getId());
                     } catch (IOException ex) {
                     }
                     break;
                 }
+            }
+        }
+    }
+    
+    private void registrarInteraccion(int docId) {
+        Connection connection = null;
+
+        try {
+            // Establecer la conexión con la base de datos
+            connection = DriverManager.getConnection("jdbc:sqlite:database.sqlite");
+            
+            // Insertar datos aleatorios en la tabla Interaccion
+            String insertarDatosInteraccion = "INSERT INTO Interaccion (UsuarioId, DocId) VALUES (?, ?)";
+            try ( var pstmtInter = connection.prepareStatement(insertarDatosInteraccion)) {
+                pstmtInter.setInt(1, usr.getId()); // UsuarioId
+                pstmtInter.setInt(2, docId); // DocId
+                pstmtInter.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+        } finally {
+            try {
+                // Cerrar la conexión
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
             }
         }
     }

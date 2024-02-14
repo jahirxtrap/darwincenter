@@ -31,10 +31,10 @@ Procedimiento AlgoritmoRecomendacion():
            (EstiloAprendizajeUsuario = EstiloAprendizajeDoc O IntMultiplesUsuario = IntMultiplesDoc):
                Mostrar Archivo
 
-        // Leer contenido de Historial y obtener el número de palabras clave similares
-        Mientras haya documentos(Archivo) en Historial:
-            Si NumPalabrasSimilares >= 30:
-                Mostrar Archivo
+        // Leer contenido de Interaccion y obtener los documentos mas revisados por otros usuarios con perfil similar
+        Mientras haya Interacciones(Usuario, Doc) en Interaccion:
+            Algoritmo Filtrado Colaborativo
+            Ordenar Lista
         Fin Mientras
     Fin Mientra
 

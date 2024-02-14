@@ -12,6 +12,7 @@ import java.util.List;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
 
 /**
  *
@@ -89,6 +90,8 @@ public class AgenteRecomendacion extends Agent {
                             doc.setArchivo(resultSet.getString("Archivo"));
                             listaDocs.add(doc);
                         }
+
+                        ordenarLista(listaDocs);
                     }
                 }
             } catch (SQLException e) {
@@ -101,6 +104,11 @@ public class AgenteRecomendacion extends Agent {
                 } catch (SQLException e) {
                 }
             }
+        }
+
+        private void ordenarLista(ArrayList<Doc> listaDocs) {
+            // Algoritmo Filtrado colaborativo
+            Collections.shuffle(listaDocs);
         }
     }
 }
