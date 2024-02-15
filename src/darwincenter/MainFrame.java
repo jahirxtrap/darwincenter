@@ -1,5 +1,6 @@
 package darwincenter;
 
+import static darwincenter.AgenteRecomendacion.listaAllDocs;
 import static darwincenter.AgenteRecomendacion.listaDocs;
 import modelo.Doc;
 import static darwincenter.LoginFrame.usr;
@@ -10,7 +11,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 
@@ -30,18 +30,27 @@ public class MainFrame extends javax.swing.JFrame {
         estApLabel.setText("Estilo de Aprendizaje: " + usr.getEstiloAprendizaje());
         intMultLabel.setText("Inteligencias Multiples: " + usr.getIntMultiples());
 
-        cargarLista();
+        cargarListas();
     }
 
-    private void cargarLista() {
+    private void cargarListas() {
         DefaultListModel<String> model = new DefaultListModel<>();
+        DefaultListModel<String> modelAll = new DefaultListModel<>();
+
         int num = 1;
         for (Doc doc : listaDocs) {
             model.addElement(" " + num + ". " + doc.getTitulo());
             num++;
         }
 
+        num = 1;
+        for (Doc doc : listaAllDocs) {
+            modelAll.addElement(" " + num + ". " + doc.getTitulo());
+            num++;
+        }
+
         recomendacionesList.setModel(model);
+        todoList.setModel(modelAll);
     }
 
     private void abrirDoc() {
@@ -62,14 +71,14 @@ public class MainFrame extends javax.swing.JFrame {
             }
         }
     }
-    
+
     private void registrarInteraccion(int docId) {
         Connection connection = null;
 
         try {
             // Establecer la conexión con la base de datos
             connection = DriverManager.getConnection("jdbc:sqlite:database.sqlite");
-            
+
             // Insertar datos aleatorios en la tabla Interaccion
             String insertarDatosInteraccion = "INSERT INTO Interaccion (UsuarioId, DocId) VALUES (?, ?)";
             try ( var pstmtInter = connection.prepareStatement(insertarDatosInteraccion)) {
@@ -95,9 +104,11 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         recomendacionesList = new javax.swing.JList<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        todoList = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
         logoutButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -113,9 +124,10 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Recomendaciones:");
+        jTabbedPane1.setBackground(new java.awt.Color(0, 0, 0));
+        jTabbedPane1.setForeground(new java.awt.Color(255, 255, 255));
+        jTabbedPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jTabbedPane1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
 
         recomendacionesList.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         recomendacionesList.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -130,6 +142,23 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(recomendacionesList);
 
+        jTabbedPane1.addTab("Recomendaciones", jScrollPane1);
+
+        todoList.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        todoList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                todoListMouseClicked(evt);
+            }
+        });
+        todoList.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                todoListKeyPressed(evt);
+            }
+        });
+        jScrollPane2.setViewportView(todoList);
+
+        jTabbedPane1.addTab("Todos los artículos", jScrollPane2);
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -140,6 +169,7 @@ public class MainFrame extends javax.swing.JFrame {
         logoutButton.setForeground(new java.awt.Color(255, 255, 255));
         logoutButton.setText("Cerrar sesión");
         logoutButton.setToolTipText("");
+        logoutButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         logoutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 logoutButtonActionPerformed(evt);
@@ -201,6 +231,7 @@ public class MainFrame extends javax.swing.JFrame {
         openButton.setForeground(new java.awt.Color(255, 255, 255));
         openButton.setText("Abrir");
         openButton.setToolTipText("");
+        openButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         openButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openButtonActionPerformed(evt);
@@ -214,9 +245,8 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jTabbedPane1)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGap(35, 35, 35)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 576, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -236,9 +266,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(logoutButton)
@@ -285,18 +313,32 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_recomendacionesListKeyPressed
 
+    private void todoListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_todoListMouseClicked
+        if (evt.getClickCount() == 2) { // Doble clic
+            openButton.doClick();
+        }
+    }//GEN-LAST:event_todoListMouseClicked
+
+    private void todoListKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_todoListKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) { // Enter
+            openButton.doClick();
+        }
+    }//GEN-LAST:event_todoListKeyPressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ciLabel;
     private javax.swing.JLabel estApLabel;
     private javax.swing.JLabel intMultLabel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton openButton;
     private javax.swing.JList<String> recomendacionesList;
+    private javax.swing.JList<String> todoList;
     private javax.swing.JLabel userLabel;
     // End of variables declaration//GEN-END:variables
 }

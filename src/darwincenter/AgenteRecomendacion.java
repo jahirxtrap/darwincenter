@@ -21,6 +21,7 @@ import java.util.Collections;
 public class AgenteRecomendacion extends Agent {
 
     static ArrayList<Doc> listaDocs;
+    static ArrayList<Doc> listaAllDocs;
 
     @Override
     protected void setup() {
@@ -70,7 +71,7 @@ public class AgenteRecomendacion extends Agent {
                 // Establecer la conexión con la base de datos
                 connection = DriverManager.getConnection("jdbc:sqlite:database.sqlite");
 
-                // Preparar la consulta SQL para obtener el usuario con el username y password proporcionados
+                // Preparar la consulta SQL para obtener los Docs con los datos proporcionados
                 String consulta = "SELECT * FROM Docs WHERE CocienteIntelectual >= ? AND (EstiloAprendizajeId = ? OR IntMultiplesId = ?)";
                 try ( var pstmt = connection.prepareStatement(consulta)) {
                     pstmt.setString(2, datosUsuario.get(0));
@@ -92,6 +93,26 @@ public class AgenteRecomendacion extends Agent {
                         }
 
                         ordenarLista(listaDocs);
+                    }
+                }
+
+                // Preparar la consulta SQL para obtener todos los Docs
+                String consultaAll = "SELECT * FROM Docs";
+                try ( var pstmt = connection.prepareStatement(consultaAll)) {
+
+                    // Verificar si se encontró docs con los datos proporcionados
+                    try ( var resultSet = pstmt.executeQuery()) {
+                        listaAllDocs = new ArrayList<>();
+
+                        // Recorrer todos los docs y agregarlos a la lista
+                        while (resultSet.next()) {
+                            // Asignar los valores a la lista de docs
+                            Doc doc = new Doc();
+                            doc.setId(resultSet.getInt("id"));
+                            doc.setTitulo(resultSet.getString("Titulo"));
+                            doc.setArchivo(resultSet.getString("Archivo"));
+                            listaAllDocs.add(doc);
+                        }
                     }
                 }
             } catch (SQLException e) {
