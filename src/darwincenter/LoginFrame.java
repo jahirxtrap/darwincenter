@@ -1,12 +1,11 @@
 package darwincenter;
 
-import modelo.Usuario;
+import static darwincenter.AgenteUsuario.obtenerUsuarios;
+import static darwincenter.AgenteUsuario.listaUsuarios;
 import static modelo.Database.crearDatabase;
+import modelo.Usuario;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
@@ -169,8 +168,9 @@ public class LoginFrame extends javax.swing.JFrame {
             new LoginFrame().setVisible(true);
         });
 
-        // Crear Base de datos
+        // Crear Base de datos y obtener usuarios
         crearDatabase();
+        obtenerUsuarios();
     }
 
     private void login() {
@@ -208,70 +208,10 @@ public class LoginFrame extends javax.swing.JFrame {
         }
     }
 
-    private void obtenerUsuario(String user, String password) {
-        Connection connection = null;
-
-        try {
-            // Establecer la conexión con la base de datos
-            connection = DriverManager.getConnection("jdbc:sqlite:database.sqlite");
-
-            // Preparar la consulta SQL para obtener el usuario con el username y password proporcionados
-            String consulta = "SELECT * FROM Usuario WHERE Username = ? AND Password = ?";
-            try ( var pstmt = connection.prepareStatement(consulta)) {
-                pstmt.setString(1, user);
-                pstmt.setString(2, password);
-
-                // Verificar si se encontró un usuario con el nombre de usuario y contraseña proporcionados
-                try ( var resultSet = pstmt.executeQuery()) {
-                    // Verificar si se obtuvo alguna fila
-                    if (resultSet.next()) {
-                        usr = new Usuario();
-
-                        // Obtener los valores de EstiloAprendizaje e IntMultiples mediante sus IDs
-                        int estiloAprendizajeId = resultSet.getInt("EstiloAprendizajeId");
-                        int intMultiplesId = resultSet.getInt("IntMultiplesId");
-
-                        // Asignar los valores básicos al objeto usr
-                        usr.setId(resultSet.getInt("id"));
-                        usr.setUsername(resultSet.getString("Username"));
-                        usr.setPassword(resultSet.getString("Password"));
-                        usr.setEstiloAprendizajeId(estiloAprendizajeId);
-                        usr.setIntMultiplesId(intMultiplesId);
-                        usr.setCocienteIntelectual(resultSet.getInt("CocienteIntelectual"));
-
-                        // Consultar las tablas EstiloAprendizaje e IntMultiples para obtener los valores reales
-                        String consultaEstilo = "SELECT Valor FROM EstiloAprendizaje WHERE id = ?";
-                        String consultaIntMultiples = "SELECT Valor FROM IntMultiples WHERE id = ?";
-
-                        try ( var pstmtEstilo = connection.prepareStatement(consultaEstilo);  var pstmtIntMultiples = connection.prepareStatement(consultaIntMultiples)) {
-
-                            // Obtener el valor de EstiloAprendizaje
-                            pstmtEstilo.setInt(1, estiloAprendizajeId);
-                            try ( var resultSetEstilo = pstmtEstilo.executeQuery()) {
-                                if (resultSetEstilo.next()) {
-                                    usr.setEstiloAprendizaje(resultSetEstilo.getString("Valor"));
-                                }
-                            }
-
-                            // Obtener el valor de IntMultiples
-                            pstmtIntMultiples.setInt(1, intMultiplesId);
-                            try ( var resultSetIntMultiples = pstmtIntMultiples.executeQuery()) {
-                                if (resultSetIntMultiples.next()) {
-                                    usr.setIntMultiples(resultSetIntMultiples.getString("Valor"));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (SQLException e) {
-        } finally {
-            try {
-                // Cerrar la conexión
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
+    private void obtenerUsuario(String user, String pass) {
+        for (Usuario usuario : listaUsuarios) {
+            if (usuario.getUsername().equals(user) && usuario.getPassword().equals(pass)) {
+                usr = usuario;
             }
         }
     }

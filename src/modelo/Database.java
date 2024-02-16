@@ -133,7 +133,7 @@ public class Database {
             // Insertar datos aleatorios en la tabla Docs
             String insertarDatosDocs = "INSERT INTO Docs (Titulo, Archivo, EstiloAprendizajeId, IntMultiplesId, CocienteIntelectual) VALUES (?, ?, ?, ?, ?)";
             try ( var pstmtDocs = connection.prepareStatement(insertarDatosDocs)) {
-                for (int i = 1; i <= 150; i++) {
+                for (int i = 1; i <= 200; i++) {
                     pstmtDocs.setString(1, "Articulo" + i);
                     pstmtDocs.setString(2, "media/doc" + (random.nextInt(8) + 1) + ".pdf"); // Archivo entre 1 y 8
                     pstmtDocs.setInt(3, random.nextInt(4) + 1); // EstiloAprendizajeId entre 1 y 4
@@ -146,9 +146,9 @@ public class Database {
             // Insertar datos aleatorios en la tabla Interaccion
             String insertarDatosInteraccion = "INSERT INTO Interaccion (UsuarioId, DocId) VALUES (?, ?)";
             try ( var pstmtInter = connection.prepareStatement(insertarDatosInteraccion)) {
-                for (int i = 1; i <= 500; i++) {
-                    pstmtInter.setInt(1, random.nextInt(31) + 1); // UsuarioId entre 1 y 31
-                    pstmtInter.setInt(2, random.nextInt(150) + 1); // DocId entre 1 y 150
+                for (int i = 1; i <= 600; i++) {
+                    pstmtInter.setInt(1, random.nextInt(201) + 1); // UsuarioId entre 1 y 201
+                    pstmtInter.setInt(2, random.nextInt(200) + 1); // DocId entre 1 y 200
                     pstmtInter.executeUpdate();
                 }
             }

@@ -35,7 +35,6 @@ public class AgenteUsuario extends Agent {
             ACLMessage solicitudPerfil = blockingReceive();
             if (solicitudPerfil != null && solicitudPerfil.getContent().equals("SolicitarPerfil")) {
                 // Proporcionar datos de perfil al agente de recomendación
-                obtenerUsuarios();
                 enviarPerfil();
             }
 
@@ -66,75 +65,75 @@ public class AgenteUsuario extends Agent {
             List<String> listaRecomendaciones = Arrays.asList(recomendaciones.split(","));
             System.out.println("Recomendaciones: " + listaRecomendaciones + "\n------------------------------------");
         }
+    }
 
-        private void obtenerUsuarios() {
-            // Obtener todos los usuarios
-            Connection connection = null;
+    public static void obtenerUsuarios() {
+        // Obtener todos los usuarios
+        Connection connection = null;
 
-            try {
-                // Establecer la conexión con la base de datos
-                connection = DriverManager.getConnection("jdbc:sqlite:database.sqlite");
+        try {
+            // Establecer la conexión con la base de datos
+            connection = DriverManager.getConnection("jdbc:sqlite:database.sqlite");
 
-                // Preparar la consulta SQL para obtener todas las Interacciones
-                String consulta = "SELECT * FROM Usuario";
-                try ( var pstmt = connection.prepareStatement(consulta)) {
+            // Preparar la consulta SQL para obtener todas las Interacciones
+            String consulta = "SELECT * FROM Usuario";
+            try ( var pstmt = connection.prepareStatement(consulta)) {
 
-                    // Verificar si se encontró docs con los datos proporcionados
-                    try ( var resultSet = pstmt.executeQuery()) {
-                        listaUsuarios = new ArrayList<>();
+                // Verificar si se encontró docs con los datos proporcionados
+                try ( var resultSet = pstmt.executeQuery()) {
+                    listaUsuarios = new ArrayList<>();
 
-                        // Recorrer todos los docs y agregarlos a la lista
-                        while (resultSet.next()) {
-                            // Asignar los valores a la lista de usuarios
-                            Usuario usuario = new Usuario();
+                    // Recorrer todos los docs y agregarlos a la lista
+                    while (resultSet.next()) {
+                        // Asignar los valores a la lista de usuarios
+                        Usuario usuario = new Usuario();
 
-                            // Obtener los valores de EstiloAprendizaje e IntMultiples mediante sus IDs
-                            int estiloAprendizajeId = resultSet.getInt("EstiloAprendizajeId");
-                            int intMultiplesId = resultSet.getInt("IntMultiplesId");
+                        // Obtener los valores de EstiloAprendizaje e IntMultiples mediante sus IDs
+                        int estiloAprendizajeId = resultSet.getInt("EstiloAprendizajeId");
+                        int intMultiplesId = resultSet.getInt("IntMultiplesId");
 
-                            // Asignar los valores básicos al objeto usr
-                            usuario.setId(resultSet.getInt("id"));
-                            usuario.setUsername(resultSet.getString("Username"));
-                            usuario.setPassword(resultSet.getString("Password"));
-                            usuario.setEstiloAprendizajeId(estiloAprendizajeId);
-                            usuario.setIntMultiplesId(intMultiplesId);
-                            usuario.setCocienteIntelectual(resultSet.getInt("CocienteIntelectual"));
+                        // Asignar los valores básicos al objeto usr
+                        usuario.setId(resultSet.getInt("id"));
+                        usuario.setUsername(resultSet.getString("Username"));
+                        usuario.setPassword(resultSet.getString("Password"));
+                        usuario.setEstiloAprendizajeId(estiloAprendizajeId);
+                        usuario.setIntMultiplesId(intMultiplesId);
+                        usuario.setCocienteIntelectual(resultSet.getInt("CocienteIntelectual"));
 
-                            // Consultar las tablas EstiloAprendizaje e IntMultiples para obtener los valores reales
-                            String consultaEstilo = "SELECT Valor FROM EstiloAprendizaje WHERE id = ?";
-                            String consultaIntMultiples = "SELECT Valor FROM IntMultiples WHERE id = ?";
+                        // Consultar las tablas EstiloAprendizaje e IntMultiples para obtener los valores reales
+                        String consultaEstilo = "SELECT Valor FROM EstiloAprendizaje WHERE id = ?";
+                        String consultaIntMultiples = "SELECT Valor FROM IntMultiples WHERE id = ?";
 
-                            try ( var pstmtEstilo = connection.prepareStatement(consultaEstilo);  var pstmtIntMultiples = connection.prepareStatement(consultaIntMultiples)) {
+                        try ( var pstmtEstilo = connection.prepareStatement(consultaEstilo);  var pstmtIntMultiples = connection.prepareStatement(consultaIntMultiples)) {
 
-                                // Obtener el valor de EstiloAprendizaje
-                                pstmtEstilo.setInt(1, estiloAprendizajeId);
-                                try ( var resultSetEstilo = pstmtEstilo.executeQuery()) {
-                                    if (resultSetEstilo.next()) {
-                                        usuario.setEstiloAprendizaje(resultSetEstilo.getString("Valor"));
-                                    }
-                                }
-
-                                // Obtener el valor de IntMultiples
-                                pstmtIntMultiples.setInt(1, intMultiplesId);
-                                try ( var resultSetIntMultiples = pstmtIntMultiples.executeQuery()) {
-                                    if (resultSetIntMultiples.next()) {
-                                        usuario.setIntMultiples(resultSetIntMultiples.getString("Valor"));
-                                    }
+                            // Obtener el valor de EstiloAprendizaje
+                            pstmtEstilo.setInt(1, estiloAprendizajeId);
+                            try ( var resultSetEstilo = pstmtEstilo.executeQuery()) {
+                                if (resultSetEstilo.next()) {
+                                    usuario.setEstiloAprendizaje(resultSetEstilo.getString("Valor"));
                                 }
                             }
-                            listaUsuarios.add(usuario);
+
+                            // Obtener el valor de IntMultiples
+                            pstmtIntMultiples.setInt(1, intMultiplesId);
+                            try ( var resultSetIntMultiples = pstmtIntMultiples.executeQuery()) {
+                                if (resultSetIntMultiples.next()) {
+                                    usuario.setIntMultiples(resultSetIntMultiples.getString("Valor"));
+                                }
+                            }
                         }
+                        listaUsuarios.add(usuario);
                     }
+                }
+            }
+        } catch (SQLException e) {
+        } finally {
+            try {
+                // Cerrar la conexión
+                if (connection != null) {
+                    connection.close();
                 }
             } catch (SQLException e) {
-            } finally {
-                try {
-                    // Cerrar la conexión
-                    if (connection != null) {
-                        connection.close();
-                    }
-                } catch (SQLException e) {
-                }
             }
         }
     }
