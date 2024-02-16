@@ -16,7 +16,7 @@ Este sistema se enfoca en recomendar artículos científicos a los usuarios con 
 
 - **scr:** Contiene el pseudocódigo inicial del algoritmo de recomendación y recursos como el ícono y logo del sistema. Además, contiene los paquetes darwincenter y modelo.
 - **darwincenter:** Es el paquete principal del sistema, contiene los dos agentes utilizados (AgenteUsuario y AgenteRecomendación), además del agente principal (Main) y las clases de interfaz de usuario (MainFrame y LoginFrame).
-- **modelo:** Incluye la clase encargada de crear la base de datos (Database) y los objetos necesarios para acceder a los datos en todo el sistema mediante encapsulamiento (Usuario y Doc).
+- **modelo:** Incluye la clase encargada de crear la base de datos (Database) y los objetos necesarios para acceder a los datos en todo el sistema mediante encapsulamiento (Usuario, Doc e Interaccion).
 
 <p align="center"><img src="https://github.com/jahirxtrap/darwincenter/blob/master/media/readme/estructura_2.png" alt="img" style="width: 45%"></p>
 
@@ -36,11 +36,11 @@ Este sistema se enfoca en recomendar artículos científicos a los usuarios con 
 
 <p align="center"><img src="https://github.com/jahirxtrap/darwincenter/blob/master/media/readme/ejecucion_2.png" alt="img" style="width: 60%"></p>
 
-3. El sistema analiza el perfil del usuario y ejecuta el algoritmo de recomendación para mostrar una lista de artículos.
+3. El sistema analiza el perfil del usuario, ejecuta el algoritmo de recomendación para mostrar una lista de artículos recomendados en la primera pestaña y se ordena mediante filtrado colaborativo, el cual analiza las interacciones de otros usuarios y asigna una puntuación a cada artículo. El usuario tendrá acceso a todos los artículos al hacer clic en la segunda pestaña de la interfaz.
 
 <p align="center"><img src="https://github.com/jahirxtrap/darwincenter/blob/master/media/readme/ejecucion_3.png" alt="img" style="width: 70%"></p>
 
-4. Se puede seleccionar un artículo, hacer doble clic, presionar enter o hacer clic en el botón 'Abrir', entonces se utilizará el lector PDF predeterminado para abrir el documento. También se puede cerrar sesión e ingresar con otro usuario.
+4. Se puede seleccionar un artículo, hacer doble clic, presionar enter o hacer clic en el botón 'Abrir', entonces se utilizará el lector PDF predeterminado para abrir el documento. También se puede cerrar sesión e ingresar con otro usuario. La interacción será guardada en la base de datos.
 
 <p align="center"><img src="https://github.com/jahirxtrap/darwincenter/blob/master/media/readme/ejecucion_4.png" alt="img" style="width: 90%"></p>
 
