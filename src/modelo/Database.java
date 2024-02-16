@@ -120,7 +120,7 @@ public class Database {
                 pstmtUsuario.setInt(4, random.nextInt(8) + 1);  // IntMultiplesId entre 1 y 8
                 pstmtUsuario.setInt(5, random.nextInt(61) + 80); // CocienteIntelectual entre 80 y 140
                 pstmtUsuario.executeUpdate();
-                for (int i = 1; i <= 30; i++) {
+                for (int i = 1; i <= 200; i++) {
                     pstmtUsuario.setString(1, "user" + i);
                     pstmtUsuario.setString(2, "pass" + i);
                     pstmtUsuario.setInt(3, random.nextInt(4) + 1);  // EstiloAprendizajeId entre 1 y 4
@@ -146,7 +146,7 @@ public class Database {
             // Insertar datos aleatorios en la tabla Interaccion
             String insertarDatosInteraccion = "INSERT INTO Interaccion (UsuarioId, DocId) VALUES (?, ?)";
             try ( var pstmtInter = connection.prepareStatement(insertarDatosInteraccion)) {
-                for (int i = 1; i <= 200; i++) {
+                for (int i = 1; i <= 500; i++) {
                     pstmtInter.setInt(1, random.nextInt(31) + 1); // UsuarioId entre 1 y 31
                     pstmtInter.setInt(2, random.nextInt(150) + 1); // DocId entre 1 y 150
                     pstmtInter.executeUpdate();

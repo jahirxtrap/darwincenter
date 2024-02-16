@@ -55,6 +55,12 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void abrirDoc() {
         int index = recomendacionesList.getSelectedIndex();
+        int panel = jTabbedPane1.getSelectedIndex();
+
+        if (panel == 1) {
+            index = todoList.getSelectedIndex();
+        }
+
         if (index != -1) {
             int id = listaDocs.get(index).getId();
             for (Doc doc : listaDocs) {
